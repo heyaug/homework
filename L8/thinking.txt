@@ -1,0 +1,29 @@
+Thinking1 在CTR点击率预估中，使用GBDT+LR的原理是什么？
+GBDT做特征转换生成新特征，LR用新特征学习
+LR学习能力有限，提升LR效果可以对特征进行一些处理，比如对连续值分段编码成离散值，对不同特征组合建立新特征。
+GBDT可以同时做到这两点，每颗树都是一个分类特征，从根节点到叶节点的遍历是特征组合，叶节点输出的是二进制编码的新特征，实验结果表明GBDT+LR对比LR提升效果明显。
+
+Thinking2 Wide & Deep的模型结构是怎样的，为什么能通过具备记忆和泛化能力（memorization and generalization）
+Wide & Deep分成wide部分和deep部分，wide部分是LR，deep部分是DNN，输出是LR和DNN输出叠加。
+具备记忆能力用LR学习item或feature之间的相关频率，再历史数据探索相关性的可行性
+具备泛化能力是用DNN基于相关性的传递，探索一些没出现过的特征组合
+
+Thinking3 在CTR预估中，使用FM与DNN结合的方式，有哪些结合的方式，代表模型有哪些？
+DeepFM、FNN、NFM
+DeepFM是将wide&deep的LR替换成FM模型，FM考虑到特征组合，比LR效果好
+FNN是wide&deep中的deep模型，用FM对embedding层初始化
+NFM考虑到embedding之后的特征的交叉计算，用FM的结果作为DNN的输入
+
+Thinking4 Surprise工具中的baseline算法原理是怎样的？BaselineOnly和KNNBaseline有什么区别？
+分数平均值加分数偏差，在评分表里，bu可以看成横向user的偏差，bi可以看成纵向item的偏差
+BaselineOnly是实现baseline
+KNNBaseline是对KNNWithMeans改进，用baseline值替代均值，KNNWithMeans是对KNNBasic改进，去除平均值后再计算，KNNBasic计算user-user或item-item相似度
+
+Thinking5 GBDT和随机森林都是基于树的算法，它们有什么区别？
+随机森林是bagging方法，同时训练多棵树取预测结果的平均值，GBDT是boosting方法，使用上一颗树的结果作为下棵树的输入
+，
+Thinking6 基于邻域的协同过滤都有哪些算法，请简述原理
+baseline，slope one，KNNBasic等
+baseline：平均值加偏差值
+slope one：根据其他用户对item评分差值的平均值预测用户对item评分
+KNNBasic：基于相似度
