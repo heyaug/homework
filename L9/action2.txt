@@ -1,0 +1,14 @@
+召回：DNN模型，把推荐问题看成一个“超大规模多分类”问题，DNN的任务就是在用户信息，上下文信息为输入条件的情况下，学习用户的embedding向量u，通过一个softmax分类器，u能够有效的识别item的类别
+排序：DNN模型，比召回特征更精细
+
+输入层：
+召回：每个item embedding到固定维度的向量中。通过加权平均（可根据重要性和时间进行加权）得到固定维度向量作为输入，search tokens做法类似，对用户画像特征归一化到[0,1],和其他向量拼接。
+排序：类似召回特征更多更细，采用embedding的方式映射稀疏离散特征为密集向量，每一个类别特征维度生成一个独立的embedding空间，对于相同域的特征可以共享embedding，好处在于加速迭代，降低内存开销
+
+隐藏层：
+均采用的Tower塔式模型，即第一层1024，第二层512，第三层256
+
+输出层：
+召回：用softmax。Serving 阶段直接用user Embedding和video Embedding计算dot-product表示分数，取topk作为候选结果。
+排序：Weighted LR。Serving时激励函数使用的e^(Wx+b)
+
