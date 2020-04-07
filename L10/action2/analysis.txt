@@ -1,0 +1,21 @@
+Reading output/baseline.ndcg.txt... 157 ranked lists [Done]
+Reading output/lambdamart.ndcg.txt... 157 ranked lists [Done]
+Reading output/listnet.ndcg.txt... 157 ranked lists [Done]
+Reading output/ranknet.ndcg.txt... 157 ranked lists [Done]
+
+
+Overall comparison
+------------------------------------------------------------------------
+System	Performance	Improvement	Win	Loss	p-value
+baseline.ndcg.txt [baseline]	0.3257
+lambdamart.ndcg.txt	0.4891	+0.1633 (+50.15%)	79	25	0.0
+listnet.ndcg.txt	0.4685	+0.1428 (+43.84%)	80	21	0.0
+ranknet.ndcg.txt	0.4814	+0.1557 (+47.79%)	82	19	0.0
+
+
+Detailed break down
+------------------------------------------------------------------------
+	[ < -100%)	[-100%, -75%)	[-75%, -50%)	[-50%, -25%)	[-25%, 0%)	(0%, +25%]	(+25%, +50%]	(+50%, +75%]	(+75%, +100%]	( > +100%]
+lambdamart.ndcg.txt	0	0	0	6	19	24	35	15	5	0
+listnet.ndcg.txt	0	0	0	5	16	34	29	15	2	0
+ranknet.ndcg.txt	0	0	0	5	14	33	29	18	2	0

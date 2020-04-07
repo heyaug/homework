@@ -1,0 +1,35 @@
+如果你是某P2P租车的技术负责人，你会如何设计个性化推荐和搜索排序
+阐述相似车型，搜索排序的设计方法
+可能的embedding策略
+租车场景
+用户很少会多次预定同一种车，一辆车在某段时间只能租给一个用户，对于大部分租车用户租车是低频事件，数据存在严重的稀疏性
+
+搜索排序：
+对于query（带有位置和旅行的时间），同时为host和guest优化搜索结果：
+顾客角度：需要根据位置，价格，类型，评论等因素排序来获得客户喜欢的listing
+车主角度：需要过滤掉那些有坏的评论，宠物，停留时间，人数，等其他因素而拒绝guest的listing，将这些listing排列的低一点
+采用Learnig to rank来做，将问题转换为pairwise regression问题，将预定的listing作为正样本，拒绝的作为负样本。
+
+embedding策略
+将每个汽车 =>汽车 embedding
+数据集由 N 个用户的点击会话 (Session) 组成，其中每个会话定义为一个由用户点击的 M个房源 id 组成的的不间断序列，只要用户连续两次点击时间间隔超过30分钟，就认为是一个新的Session
+目标是通过集合S，学习出每个房源listing的d维（ 32 维）embedding表示，让相似listing在embedding空间中距离更近
+借鉴了word2vec中的skip-gram算法
+汽车embedding，把每个用户连续点击过的汽车Session看做一个句子，每个汽车当做word，训练出房源的embedding
+
+对于输入的one-hot编码：
+在矩阵相乘的时候，选取出矩阵中的某一行，而这一行就是输入词语的word2vec表示
+隐含层的节点个数 = 词向量的维数
+隐层的输出是每个输入单词的Word Embedding
+word2vec，实际上就是一个查找表
+
+List Embedding的目标函数构造：
+适配聚集搜索，Adapting Training for Congregated Search
+根据汽车地区进一步优化得到最终的目标函数
+用户确定租车，汽车都应该是同一个区域的，传统的负采样会随机从全样本中随机抽取
+加入了另一组negative sample，就是在 central listing 同一区域的 listing 集合中进行随机抽样
+
+
+
+
+
