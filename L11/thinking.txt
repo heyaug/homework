@@ -1,0 +1,35 @@
+Thinking1 电商定向广告和搜索广告有怎样的区别，算法模型是否有差别
+搜索广告有查询条件，定向广告没有查询条件
+搜索广告用户有明确的目的，定向广告用户没有明确的目标
+定向广告算法模型有LR、MLR、DNN、DIEN、DISN，用用户以往行为预测可能喜欢的物品
+搜索广告的算法模型基于相似度，找到和查询条件相关性最高的物品
+
+Thinking2 定向广告都有哪些常见的使用模型，包括Attention机制模型
+LR：线性模型，LR模型 + 人工特征，LR模型不能处理非线性特征，需要特征工程去加入非线性特征
+MLR：非线性模型，Mixed Logistic Regression，混合逻辑回归，采用分而治之的策略，用分段线性+级联，拟合高维空间的非线性分类面，相比于人工来说提升了效率和精度
+DNN：深度学习，能使用GPU，处理复杂模型和大数据量
+DIN：考虑到用户历史行为，引入attention机制，在pooling的时候，给与候选广告相关的商品大一些的权重
+DIEN：考虑到用户的兴趣是不断变化的，使用behavior layer，interest extractor layer 以及 interest evolving layer从用户历史行为中挖掘用户与目标商品相关的兴趣及演变
+DISN：将用户的连续行为自然地划分为session，通过带有偏置编码的self attention网络对每个会话进行建模，使用BI-LSTM捕捉用户不同历史会话兴趣的交互和演变
+
+Thinking3 DIN中的Attention机制思想和原理是怎样的
+针对电商场景中，用户的兴趣是多样的，可能在一段时间内点击过衣服，电子产品，鞋子等。对于不同的candidate来说，浏览过的相关商品对于预测帮助更大，不相关的商品对于CTR预估并不起作用，比如用户看过的iphone，鞋子对于衣服的预测没有帮助。
+Attention机制是在对用户行为的embedding计算上引入了attention network (也称为Activation Unit) ，把用户历史行为特征进行embedding操作，视为对用户兴趣的表示，之后通过Attention Unit，对每个兴趣表示赋予不同的权值，在pooling的时候，与 candidate Ad 相关的商品权重大一些，与candidate Ad 不相关的商品权重小一些。
+
+Thinking4 DIEN相比于DIN有哪些创新
+用户的兴趣是不断进化的，而DIN抽取的用户兴趣之间是独立无关联的，没有捕获到兴趣的动态进化性，比如用户对衣服的喜好，会随季节、时尚风潮以及个人品味的变化而变化，呈现一种连续的变迁趋势。
+DIEN通过引入序列模型 AUGRU 模拟了用户兴趣进化的过程，在 Embedding layer 和 Concatenate layer 之间加入了生成兴趣的 Interest Extractor Layer 和模拟兴趣演化的 Interest Evolving layer，Interest Extractor Layer 使用了GRU的结构抽取了每一个时间片内用户的兴趣，
+Interest Evolving layer 利用序列模型 AUGRU 的结构将不同时间的用户兴趣串联起来，形成兴趣进化的链条。最终把当前时刻的“兴趣向量”输入上层的多层全连接网络，与其他特征一起进行最终的 CTR 预估。
+
+Thinking5 DSIN关于Session的洞察是怎样的，如何对Session兴趣进行表达
+每个Session中的行为是相近的，而在不同Session之间差别是很大的（类似聚类）
+序列切分层（Session Division Layer）将用户的点击行为按照时间排序，前后的时间间隔大于30min，就进行切分，将用户的行为序列S切分成多个会话序列Q。
+会话兴趣抽取层（Session Interest Extractor Layer）Self-Attention提取用户的Session兴趣向量，同时可以并行计算
+会话兴趣交互层（Session Interest Interacting Layer）将会话兴趣抽取层的输出作为该层的输入，用Bi-LSTM模拟不同Session的兴趣动态改变
+会话兴趣激活层（Session Interest Activating Layer）和DIN的Local Activation Unit作用类似，用户的Session兴趣与目标物品越相近，则赋予更大的权重。
+
+Thinking6 如果你来设计淘宝定向广告，会有哪些future work（即下一个阶段的idea）
+假设用户对某商品感兴趣但暂时没有购买意图，可能会频繁的浏览这类商品的广告。推荐系统发现了用户的兴趣推荐相似的商品，可能不是用户想买的。
+用户有多兴趣，推荐系统可能发现用户某些兴趣，但没发现没有在session中体现的兴趣。
+可以发现用户潜在的购买意图，比如相似的订单用户的购买习惯可能也相似，可以推荐一定比例其他用户买过的但没在session里出现过的商品。
+可以对重复浏览但没购买的兴趣负采样。对某些商品近期已购买的能不会再次购买。可以用用户数据和历史订单建立新的用户特征。
