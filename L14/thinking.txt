@@ -1,0 +1,12 @@
+Thinking1  什么是Graph Embedding，都有哪些算法模型
+Graph Embedding是一种Embedding降维技术，可以有效的挖掘图网络中的节点特征表示。适用于社交网络、生物信息、用户行为序列(购物、浏览)等存在大量关系图谱的场景
+算法模型有：deep walk、Node2Vec、GCN
+
+Thinking2  如何使用Graph Embedding在推荐系统，比如NetFlix 电影推荐，请说明简要的思路
+对用户看过的电影按观看时间排序，根据看过电影的顺序构建有向图，边记录节点到节点重复的次数，用deep walk等Graph Embedding算法生成电影的表示向量，用向量计算电影的相似度，根据用户看过的或评分高的电影推荐相似的电影。
+
+Thinking3  在交通流量预测中，如何使用Graph Embedding，请说明简要的思路
+路口作节点，根据车流方向构建有向图，边记录车流量，然后用Graph Embedding算法生成节点的表示向量，相似路口流量流量相似
+
+Thinking4  在文本分类中，如何使用Graph Embedding，请说明简要的思路
+文本作节点，文本间的相似度做边，构建有向图，用graph Embedding生成表示向量，计算相似度最高的是同类
